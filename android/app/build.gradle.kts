@@ -4,21 +4,13 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val localProperties = java.util.Properties()
-val localPropertiesFile = rootProject.file("local.properties")
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.reader().use { localProperties.load(it) }
-}
-
-val flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "1"
-val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
-
 android {
     namespace = "com.example.koperasi_ksmi_new"
-    compileSdk = 33
-    
+    compileSdk = flutter.compileSdkVersion.toInt()
+    ndkVersion = flutter.ndkVersion
+
     compileOptions {
-        isCoreLibraryDesugaringEnabled = true
+        coreLibraryDesugaringEnabled true
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
@@ -29,16 +21,15 @@ android {
 
     defaultConfig {
         applicationId = "com.example.koperasi_ksmi_new"
-        minSdk = 21
-        targetSdk = 33
-        versionCode = flutterVersionCode.toInt()
-        versionName = flutterVersionName
+        minSdk = flutter.minSdkVersion.toInt()
+        targetSdk = flutter.targetSdkVersion.toInt()
+        versionCode = flutter.versionCode.toInteger()
+        versionName = flutter.versionName
         multiDexEnabled = true
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
             signingConfig = signingConfigs.getByName("debug")
         }
     }
@@ -50,5 +41,4 @@ flutter {
 
 dependencies {
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
-    implementation("androidx.multidex:multidex:2.0.1")
 }
